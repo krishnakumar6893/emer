@@ -1,0 +1,24 @@
+version: '3'
+services:
+  ruby:
+    build:
+      context: .
+      dockerfile: Dockerfile-ruby
+    volumes:
+      - .:/opt/fontli:rw
+    ports:
+      - "8087:8088"
+    links:
+      - mongodb
+    depends_on:
+      - mongodb
+
+  mongodb:
+    build:
+      context: .
+      dockerfile: Dockerfile-mongodb
+    volumes:
+      - .:/data:rw
+    ports:
+      - "27017:27017"
+

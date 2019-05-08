@@ -1,0 +1,42 @@
+FROM ubuntu:14.04
+
+#setup environment
+RUN apt update && apt install curl -y
+
+#ARG MONGO_PACKAGE=mongodb-org
+
+#ARG MONGO_REPO=repo.mongodb.org
+
+#ENV MONGO_PACKAGE=${MONGO_PACKAGE} MONGO_REPO=${MONGO_REPO}
+
+#ENV MONGO_MAJOR 2.6
+
+#ENV MONGO_VERSION 2.6.12
+
+#Installing MongoDB
+RUN curl -O http://downloads.mongodb.org/linux/mongodb-linux-x86_64-2.6.12.tgz
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+
+RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | tee /etc/apt/sources.list.d/mongodb.list
+
+RUN apt update && apt install mongodb-org=2.6.12 mongodb-org-server=2.6.12 mongodb-org-shell=2.6.12 mongodb-org-mongos=2.6.12 mongodb-org-tools=2.6.12
+
+VOLUME ["/data"]
+
+WORKDIR /data
+
+ADD . /data
+
+EXPOSE 27017
+
+RUN mongod -f /etc/mongod.conf &
+
+COPY script.sh .
+
+RUN chmod +x script.sh
+
+CMD ./script.sh
+
+#Starting the rails server
+CMD /bin/bash -l -c "APP_SECRET_TOKEN='e00eef067487aa443c6ab9b9f4dd1c8es' rails s -p 8088"
