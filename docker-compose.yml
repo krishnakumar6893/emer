@@ -9,11 +9,11 @@ services:
     ports:
       - "8087:8088"
     links:
-      - mongodb
+      - mongodb-1
     depends_on:
       - mongodb
 
-  mongodb:
+  mongodb-1:
     build:
       context: .
       dockerfile: Dockerfile-mongodb
